@@ -1,0 +1,191 @@
+openapi: 3.0.3
+info:
+  title: Bank Customers API
+  description: Internal API for managing bank customers. Used as a reference specification for the SDK Maker to test deep object nesting, enums, records generation, and circular dependency resolution.
+  version: 1.0.0
+servers:
+  - url: https://api.internal.bank.test/v1
+
+paths:
+  /customers:
+    get:
+      summary: List all customers
+      operationId: listCustomers
+      responses:
+        '200':
+          description: A list of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    post:
+      summary: Onboard a new customer
+      operationId: createCustomer
+      requestBody:
+        description: Customer details for onboarding
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerCreateRequest'
+      responses:
+        '201':
+          description: Successfully created customer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+
+  /customers/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Unique UUID of the customer
+        schema:
+          type: string
+          format: uuid
+    get:
+      summary: Get a customer by ID
+      operationId: getCustomer
+      responses:
+        '200':
+          description: The customer details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '404':
+          description: Customer not found
+    put:
+      summary: Update a customer
+      operationId: updateCustomer
+      requestBody:
+        description: Updated customer attributes
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerUpdateRequest'
+      responses:
+        '200':
+          description: Customer updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    delete:
+      summary: Delete a customer
+      operationId: deleteCustomer
+      responses:
+        '204':
+          description: Customer deleted successfully
+
+components:
+  schemas:
+    Customer:
+      type: object
+      description: The core Customer model with complex nested relationships
+      required:
+        - id
+        - firstName
+        - lastName
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          $ref: '#/components/schemas/Address'
+          description: Deeply nested address component
+        status:
+          $ref: '#/components/schemas/CustomerStatus'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+          description: Extensible arbitrary key-value pairs
+        relationships:
+          $ref: '#/components/schemas/CustomerRelationships'
+
+    CustomerCreateRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          $ref: '#/components/schemas/Address'
+
+    CustomerUpdateRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        address:
+          $ref: '#/components/schemas/Address'
+        status:
+          $ref: '#/components/schemas/CustomerStatus'
+
+    Address:
+      type: object
+      description: Reusable Address data model
+      required:
+        - street
+        - city
+        - country
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+
+    CustomerStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - INACTIVE
+        - SUSPENDED
+        - PENDING_KYC
+      description: The lifecycle status of a bank customer
+
+    CustomerRelationships:
+      type: object
+      description: |
+        Defines the self-referential parent/child hierarchy between customers. 
+        Crucial for validating how our SDK handles recursive types without stack overflows in builder methods or initialization loops. 
+      properties:
+        primaryGuardian:
+          $ref: '#/components/schemas/Customer'
+          description: A reference to the parent or guardian customer.
+        dependents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Customer'
+          description: References to sub-accounts or children.
