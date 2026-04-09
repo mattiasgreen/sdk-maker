@@ -13,7 +13,7 @@ tasks.openApiGenerate {
     generatorName.set("java")
     library.set("native")
     inputSpec.set("$rootDir/openapi.yaml")
-    outputDir.set("$buildDir/generated-sdk")
+    outputDir.set("$rootDir/generated-sdk")
     apiPackage.set("com.example.sdk.api")
     modelPackage.set("com.example.sdk.model")
     invokerPackage.set("com.example.sdk.invoker")
@@ -25,7 +25,7 @@ tasks.openApiGenerate {
 sourceSets {
     main {
         java {
-            srcDir("$buildDir/generated-sdk/src/main/java")
+            srcDir("$rootDir/generated-sdk/src/main/java")
         }
     }
 }
