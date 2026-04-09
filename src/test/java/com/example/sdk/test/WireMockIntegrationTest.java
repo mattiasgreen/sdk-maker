@@ -34,7 +34,7 @@ public class WireMockIntegrationTest {
 
     @Test
     public void testGetCustomersEndpoint() throws Exception {
-        com.example.sdk.invoker.JSON serializer = new SerializationTest.GsonJsonSerializer();
+        com.example.sdk.invoker.JSON serializer = new GsonJsonSerializer();
         
         List<Customer> mockCustomers = List.of(
             new Customer(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), "Integration Corp", Customer.StatusEnum.ACTIVE),
@@ -50,7 +50,7 @@ public class WireMockIntegrationTest {
                         .withBody(jsonResponse)));
 
         ApiClient apiClient = new ApiClient(
-                new SerializationTest.GsonJsonSerializer(),
+                new GsonJsonSerializer(),
                 "http://localhost:" + wireMockServer.port()
         );
 

@@ -2,32 +2,17 @@ package com.example.sdk.test;
 
 import com.example.sdk.invoker.JSON;
 import com.example.sdk.model.Customer;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.junit.jupiter.api.Test;
-
-import java.lang.reflect.Type;
 import java.util.UUID;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SerializationTest {
 
-    public static class GsonJsonSerializer implements JSON {
-        private final Gson gson = new GsonBuilder().create();
 
-        @Override
-        public String serialize(Object obj) {
-            return gson.toJson(obj);
-        }
-
-        @Override
-        public <T> T deserialize(String json, Type type) {
-            return gson.fromJson(json, type);
-        }
-    }
 
     @Test
     public void testCustomerDeserialization() {
