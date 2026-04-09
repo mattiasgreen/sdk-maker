@@ -1,0 +1,62 @@
+package {{package}};
+
+import {{invokerPackage}}.ApiClient;
+import {{invokerPackage}}.JSON;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.URI;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+{{#imports}}import {{import}};
+{{/imports}}
+
+public class {{classname}} {
+    private final ApiClient apiClient;
+
+    public {{classname}}(ApiClient apiClient) {
+        this.apiClient = apiClient;
+    }
+
+    public ApiClient getApiClient() {
+        return apiClient;
+    }
+
+{{#operations}}
+{{#operation}}
+    /**
+     * {{summary}}
+     * {{notes}}
+     */
+    public {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}} {{operationId}}({{#allParams}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/allParams}}) throws Exception {
+        String path = "{{path}}"{{#pathParams}}.replace("{" + "{{baseName}}" + "}", ApiClient.urlEncode(String.valueOf({{paramName}}))){{/pathParams}};
+        
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder()
+            .uri(URI.create(apiClient.getBasePath() + path))
+            .header("Accept", "application/json");
+
+        {{#hasBodyParam}}
+        {{#bodyParam}}
+        String requestBody = apiClient.getJson().serialize({{paramName}});
+        requestBuilder.method("{{httpMethod}}", java.net.http.HttpRequest.BodyPublishers.ofString(requestBody));
+        {{/bodyParam}}
+        {{/hasBodyParam}}
+        {{^hasBodyParam}}
+        requestBuilder.method("{{httpMethod}}", java.net.http.HttpRequest.BodyPublishers.noBody());
+        {{/hasBodyParam}}
+
+        HttpRequest request = requestBuilder.build();
+        HttpResponse<String> response = apiClient.getHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() >= 300) {
+            throw new RuntimeException("API error: " + response.statusCode() + " " + response.body());
+        }
+
+        {{#returnType}}
+        Type returnType = new JSON.TypeReference<{{{returnType}}}>() {}.getType();
+        return apiClient.getJson().deserialize(response.body(), returnType);
+        {{/returnType}}
+    }
+{{/operation}}
+{{/operations}}
+}

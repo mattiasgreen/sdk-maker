@@ -1,0 +1,21 @@
+/**
+ * {{description}}{{^description}}{{classname}}{{/description}}
+ */
+public record {{classname}}(
+{{#vars}}
+    {{{datatypeWithEnum}}} {{name}}{{^-last}},{{/-last}}
+{{/vars}}
+) {
+{{#vars}}
+  {{#isEnum}}
+  {{^isContainer}}
+  {{>modelInnerEnum}}
+  {{/isContainer}}
+  {{#isContainer}}
+  {{#mostInnerItems}}
+  {{>modelInnerEnum}}
+  {{/mostInnerItems}}
+  {{/isContainer}}
+  {{/isEnum}}
+{{/vars}}
+}

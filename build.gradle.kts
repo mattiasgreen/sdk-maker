@@ -9,6 +9,8 @@ java {
     }
 }
 
+val openapiCli by configurations.creating
+
 tasks.openApiGenerate {
     generatorName.set("java")
     library.set("native")
@@ -17,9 +19,32 @@ tasks.openApiGenerate {
     apiPackage.set("com.example.sdk.api")
     modelPackage.set("com.example.sdk.model")
     invokerPackage.set("com.example.sdk.invoker")
-    configOptions.set(mapOf(
-        "useJakartaEe" to "true"
+    templateDir.set("$rootDir/src/templates")
+    globalProperties.set(mapOf(
+        "supportingFiles" to "ApiClient.java,JSON.java,ApiException.java"
     ))
+    ignoreFileOverride.set("$rootDir/.openapi-generator-ignore")
+    configOptions.set(mapOf(
+        "annotationLibrary" to "none"
+    ))
+    doLast {
+        val invokerDir = file("$rootDir/generated-sdk/src/main/java/com/example/sdk/invoker")
+        invokerDir.listFiles()?.forEach { file ->
+            if (file.name != "ApiClient.java" && file.name != "JSON.java" && file.name != "ApiException.java") {
+                file.delete()
+            }
+        }
+        val modelDir = file("$rootDir/generated-sdk/src/main/java/com/example/sdk/model")
+        modelDir.listFiles()?.forEach { file ->
+            if (file.name == "AbstractOpenApiSchema.java") {
+                file.delete()
+            } else if (file.name.endsWith(".java")) {
+                val content = file.readText()
+                val cleaned = content.lines().filter { !it.contains("com.fasterxml.jackson") }.joinToString("\n")
+                file.writeText(cleaned)
+            }
+        }
+    }
 }
 
 sourceSets {
@@ -39,10 +64,27 @@ repositories {
 }
 
 dependencies {
-    // Temporary dependencies to allow standard code generation to compile
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0")
-    implementation("org.openapitools:jackson-databind-nullable:0.2.6")
-    implementation("jakarta.annotation:jakarta.annotation-api:2.1.1")
+    "openapiCli"("org.openapitools:openapi-generator-cli:7.21.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("com.google.code.gson:gson:2.10.1")
+    testImplementation("org.wiremock:wiremock:3.5.2")
+}
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+tasks.register<JavaExec>("extractTemplates") {
+    group = "openapi tools"
+    description = "Extracts default OpenAPI generator templates to build/extracted-templates."
+    classpath = openapiCli
+    mainClass.set("org.openapitools.codegen.OpenAPIGenerator")
+    args = listOf(
+        "author",
+        "template",
+        "-g", "java",
+        "--library", "native",
+        "-o", "$buildDir/extracted-templates"
+    )
 }

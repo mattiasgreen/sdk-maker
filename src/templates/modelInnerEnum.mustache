@@ -1,0 +1,31 @@
+    public enum {{{enumName}}} {
+        {{#allowableValues}}
+        {{#enumVars}}
+        {{{name}}}({{{value}}}){{^-last}},{{/-last}}{{#-last}};{{/-last}}
+        {{/enumVars}}
+        {{/allowableValues}}
+
+        private final {{{dataType}}} value;
+
+        {{{enumName}}}({{{dataType}}} value) {
+            this.value = value;
+        }
+
+        public {{{dataType}}} getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        public static {{{enumName}}} fromValue({{{dataType}}} value) {
+            for ({{{enumName}}} b : {{{enumName}}}.values()) {
+                if (b.value.equals(value)) {
+                    return b;
+                }
+            }
+            throw new IllegalArgumentException("Unexpected value '" + value + "'");
+        }
+    }
