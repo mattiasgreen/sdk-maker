@@ -56,7 +56,7 @@ tasks.clean {
 sourceSets {
     main {
         java {
-            srcDir(tasks.openApiGenerate.map { file("${it.outputDir.get()}/src/main/java") })
+            srcDir("$rootDir/generated-sdk/src/main/java")
         }
     }
 }
