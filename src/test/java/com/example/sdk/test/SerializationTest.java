@@ -20,7 +20,12 @@ public class SerializationTest {
             {
                 "id": "123e4567-e89b-12d3-a456-426614174000",
                 "name": "Acme Corp",
-                "status": "ACTIVE"
+                "status": "ACTIVE",
+                "address": {
+                    "street": "123 Main St",
+                    "city": "Tech City",
+                    "postalCode": "12345"
+                }
             }
         """;
 
@@ -31,5 +36,7 @@ public class SerializationTest {
         assertEquals("Acme Corp", customer.name());
         assertEquals(Customer.StatusEnum.ACTIVE, customer.status());
         assertEquals(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), customer.id());
+        assertNotNull(customer.address());
+        assertEquals("123 Main St", customer.address().street());
     }
 }

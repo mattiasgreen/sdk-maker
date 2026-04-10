@@ -37,8 +37,8 @@ public class WireMockIntegrationTest {
         com.example.sdk.invoker.JSON serializer = new GsonJsonSerializer();
         
         List<Customer> mockCustomers = List.of(
-            new Customer(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), "Integration Corp", Customer.StatusEnum.ACTIVE),
-            new Customer(UUID.fromString("987e6543-e21b-34d5-c654-426614174111"), "Legacy LLC", Customer.StatusEnum.INACTIVE)
+            new Customer(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), "Integration Corp", Customer.StatusEnum.ACTIVE, new com.example.sdk.model.Address("123 Main St", "Tech City", "12345")),
+            new Customer(UUID.fromString("987e6543-e21b-34d5-c654-426614174111"), "Legacy LLC", Customer.StatusEnum.INACTIVE, null)
         );
         
         String jsonResponse = serializer.serialize(mockCustomers);
