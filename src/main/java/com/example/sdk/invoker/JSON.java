@@ -1,4 +1,4 @@
-package {{invokerPackage}};
+package com.example.sdk.invoker;
 
 import java.lang.reflect.Type;
 

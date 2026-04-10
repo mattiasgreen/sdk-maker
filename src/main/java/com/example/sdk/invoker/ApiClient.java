@@ -1,4 +1,4 @@
-package {{invokerPackage}};
+package com.example.sdk.invoker;
 
 import java.net.http.HttpClient;
 import java.net.URLEncoder;
@@ -9,10 +9,6 @@ public class ApiClient {
     private final HttpClient httpClient;
     private final JSON json;
     private final String basePath;
-
-    public ApiClient(JSON json) {
-        this(json, "{{basePath}}");
-    }
 
     public ApiClient(JSON json, String basePath) {
         this(HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build(), json, basePath);

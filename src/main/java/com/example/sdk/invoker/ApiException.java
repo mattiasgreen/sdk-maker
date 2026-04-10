@@ -1,4 +1,4 @@
-package {{invokerPackage}};
+package com.example.sdk.invoker;
 
 import java.util.Map;
 import java.util.List;

@@ -21,7 +21,6 @@ tasks.openApiGenerate {
     invokerPackage.set("com.example.sdk.invoker")
     templateDir.set("$rootDir/src/templates")
     globalProperties.set(mapOf(
-        "supportingFiles" to "ApiClient.java,JSON.java,ApiException.java",
         "models" to "",
         "apis" to ""
     ))
@@ -29,24 +28,6 @@ tasks.openApiGenerate {
     configOptions.set(mapOf(
         "annotationLibrary" to "none"
     ))
-    doLast {
-        val invokerDir = file("$rootDir/generated-sdk/src/main/java/com/example/sdk/invoker")
-        invokerDir.listFiles()?.forEach { file ->
-            if (file.name != "ApiClient.java" && file.name != "JSON.java" && file.name != "ApiException.java") {
-                file.delete()
-            }
-        }
-        val modelDir = file("$rootDir/generated-sdk/src/main/java/com/example/sdk/model")
-        modelDir.listFiles()?.forEach { file ->
-            if (file.name == "AbstractOpenApiSchema.java") {
-                file.delete()
-            } else if (file.name.endsWith(".java")) {
-                val content = file.readText()
-                val cleaned = content.lines().filter { !it.contains("com.fasterxml.jackson") }.joinToString("\n")
-                file.writeText(cleaned)
-            }
-        }
-    }
 }
 
 tasks.clean {
