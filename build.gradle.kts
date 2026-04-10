@@ -21,7 +21,9 @@ tasks.openApiGenerate {
     invokerPackage.set("com.example.sdk.invoker")
     templateDir.set("$rootDir/src/templates")
     globalProperties.set(mapOf(
-        "supportingFiles" to "ApiClient.java,JSON.java,ApiException.java"
+        "supportingFiles" to "ApiClient.java,JSON.java,ApiException.java",
+        "models" to "",
+        "apis" to ""
     ))
     ignoreFileOverride.set("$rootDir/.openapi-generator-ignore")
     configOptions.set(mapOf(
@@ -47,10 +49,14 @@ tasks.openApiGenerate {
     }
 }
 
+tasks.clean {
+    delete("$rootDir/generated-sdk")
+}
+
 sourceSets {
     main {
         java {
-            srcDir("$rootDir/generated-sdk/src/main/java")
+            srcDir(tasks.openApiGenerate.map { file("${it.outputDir.get()}/src/main/java") })
         }
     }
 }
