@@ -7,14 +7,14 @@ import java.time.Duration;
 
 public class ApiClient {
     private final HttpClient httpClient;
-    private final JSON json;
+    private final JsonSerializer json;
     private final String basePath;
 
-    public ApiClient(JSON json, String basePath) {
+    public ApiClient(JsonSerializer json, String basePath) {
         this(HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build(), json, basePath);
     }
 
-    public ApiClient(HttpClient httpClient, JSON json, String basePath) {
+    public ApiClient(HttpClient httpClient, JsonSerializer json, String basePath) {
         this.httpClient = httpClient;
         this.json = json;
         this.basePath = basePath;
@@ -24,7 +24,7 @@ public class ApiClient {
         return httpClient;
     }
 
-    public JSON getJson() {
+    public JsonSerializer getJson() {
         return json;
     }
 
@@ -33,7 +33,8 @@ public class ApiClient {
     }
 
     public static String urlEncode(String s) {
-        if (s == null) return "";
+        if (s == null)
+            return "";
         return URLEncoder.encode(s, StandardCharsets.UTF_8);
     }
 }

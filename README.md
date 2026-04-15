@@ -25,7 +25,8 @@ Most OpenAPI generators produce bulky Java client code heavily reliant on librar
 3. Run the generator and build the SDK:
 
 ```bash
-./gradlew build
+./gradlew build # builds the project, including code generation
+./gradlew extractTemplates # optional, to extract default templates for customization
+./gradlew clean # optional, to clean the generated code
+./gradlew test # optional, to run integration tests, uses wiremock to mock the API
 ```
-
-This executes code generation targeting `generated-sdk/` and confirms everything compiles cleanly using standard Java 21 features.

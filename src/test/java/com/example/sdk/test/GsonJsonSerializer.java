@@ -1,12 +1,12 @@
 package com.example.sdk.test;
 
-import com.example.sdk.invoker.JSON;
+import com.example.sdk.invoker.JsonSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.Type;
 
-public class GsonJsonSerializer implements JSON {
+public class GsonJsonSerializer implements JsonSerializer {
     private final Gson gson = new GsonBuilder().create();
 
     @Override

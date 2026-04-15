@@ -25,6 +25,7 @@ tasks.openApiGenerate {
         "apis" to ""
     ))
     ignoreFileOverride.set("$rootDir/.openapi-generator-ignore")
+    // Skip Swagger annotations
     configOptions.set(mapOf(
         "annotationLibrary" to "none"
     ))

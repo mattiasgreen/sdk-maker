@@ -4,9 +4,10 @@ import java.lang.reflect.Type;
 
 /**
  * Service Provider Interface for JSON serialization.
- * Inject an implementation of this interface into ApiClient to handle JSON parsing.
+ * Inject an implementation of this interface into ApiClient to handle JSON
+ * parsing.
  */
-public interface JSON {
+public interface JsonSerializer {
     /**
      * Serialize the given object to a JSON string.
      */

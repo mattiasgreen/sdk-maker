@@ -34,13 +34,15 @@ public class WireMockIntegrationTest {
 
     @Test
     public void testGetCustomersEndpoint() throws Exception {
-        com.example.sdk.invoker.JSON serializer = new GsonJsonSerializer();
-        
+        com.example.sdk.invoker.JsonSerializer serializer = new GsonJsonSerializer();
+
         List<Customer> mockCustomers = List.of(
-            new Customer(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), "Integration Corp", Customer.StatusEnum.ACTIVE, new com.example.sdk.model.Address("123 Main St", "Tech City", "12345")),
-            new Customer(UUID.fromString("987e6543-e21b-34d5-c654-426614174111"), "Legacy LLC", Customer.StatusEnum.INACTIVE, null)
-        );
-        
+                new Customer(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"), "Integration Corp",
+                        Customer.StatusEnum.ACTIVE,
+                        new com.example.sdk.model.Address("123 Main St", "Tech City", "12345")),
+                new Customer(UUID.fromString("987e6543-e21b-34d5-c654-426614174111"), "Legacy LLC",
+                        Customer.StatusEnum.INACTIVE, null));
+
         String jsonResponse = serializer.serialize(mockCustomers);
 
         stubFor(get(urlEqualTo("/customers"))
@@ -51,8 +53,7 @@ public class WireMockIntegrationTest {
 
         ApiClient apiClient = new ApiClient(
                 new GsonJsonSerializer(),
-                "http://localhost:" + wireMockServer.port()
-        );
+                "http://localhost:" + wireMockServer.port());
 
         DefaultApi api = new DefaultApi(apiClient);
 
